@@ -22,7 +22,7 @@ app.get("/:room", function(req, res) {
     });
 });
 
-app.listen(8000);
+app.listen(9980);
 
 function makeRandomID() {
     return String(Math.floor(Math.random()*10000));
@@ -98,6 +98,7 @@ everyone.now.moveUser = function(x, y) {
 
 everyone.now.drawUser = function(oldX, oldY, x, y, color) {
     var room = nowjs.getGroup(this.now.room);
+    // check if actually in room?
     room.now.draw(oldX, oldY, x, y, color);
 };
 

@@ -1,32 +1,42 @@
 var canvas, context;
+var inputMsg, displayMsg;
 var drawing = false;
 var started = false;
-function ev_mousemove (ev) {
-    var x, y;
 
-    // Get the mouse position relative to the canvas element.
-    if (ev.layerX || ev.layerX == 0) { // Firefox
-        x = ev.layerX;
-        y = ev.layerY;
-    } else if (ev.offsetX || ev.offsetX == 0) { // Opera
-        x = ev.offsetX;
-        y = ev.offsetY;
-    }
-
-    // The event handler works like a drawing pencil which tracks the mouse 
-    // movements. We start drawing a path made up of lines.
-    if (!started) {
-        context.beginPath();
-        context.moveTo(x, y);
-        started = true;
-    } else {
-        context.lineTo(x, y);
-        context.stroke();
-    }
+function initNow() {
+    // set up sending chat
+    $("#msgform").submit(function(e) {
+        e.preventDefault();
+        var msg = inputMsg.val();
+        now.broadcast(now.room, msg);
+        inputMsg.val('').focus();
+    });
+    
+    // set up drawing
+    var oldX = 0;
+    var oldY = 0;
+    var x = 0;
+    var y = 0;
+    canvas.mouseup(function() {
+        drawing = false;
+    }).mousedown(function(e) {
+        e.preventDefault();
+        drawing = true;
+    }).mousemove(function(e) {  
+        oldX = x;
+        oldY = y;
+        x = e.clientX - this.offsetLeft;
+        y = e.clientY - this.offsetTop;
+        
+        now.moveUser(x, y);
+        
+        if (drawing) {
+            now.drawUser(oldX, oldY, x, y);
+        }
+    });
 }
 
 /** Nowchat stuff */
-var inputMsg, displayMsg;
 now.room = window.location.pathname.toString().substring(1);
 now.receiveBroadcast = function(name, message) {
     appendMessage("<p><strong>" + name + "</strong>: " + message + "</p>");
@@ -65,42 +75,9 @@ $(function() {
     displayMsg = $('#messages'); // oh lord, this s thing messed me up.
     
     canvas  = $("#paint");
+    canvas[0].width  = canvas.parent().width();
+    canvas[0].height = canvas.parent().height();
     context = canvas[0].getContext('2d');
     
-    now.ready(function() {
-        $("#msgform").submit(function(e) {
-            e.preventDefault();
-            var msg = inputMsg.val();
-            now.broadcast(now.room, msg);
-            inputMsg.val('').focus();
-        });
-        
-        // set up drawing
-        var oldX = 0;
-        var oldY = 0;
-        var x = 0;
-        var y = 0;
-        canvas[0].width =  canvas.parent().width();
-        canvas[0].height =  canvas.parent().height();
-        canvas.mouseup(function() {
-            drawing = false;
-            // now
-        }).mousedown(function(e) {
-            drawing = true;
-            x = e.clientX - this.offsetLeft;
-            y = e.clientY - this.offsetTop;
-            // now
-        }).mousemove(function(e) {    
-            oldX = x;
-            oldY = y;
-            x = e.clientX - this.offsetLeft;
-            y = e.clientY - this.offsetTop;
-            
-            now.moveUser(x, y);
-            
-            if (drawing) {
-                now.drawUser(oldX, oldY, x, y);
-            }
-        });
-    });
+    now.ready(initNow);
 });
