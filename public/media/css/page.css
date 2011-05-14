@@ -9,12 +9,18 @@ html, body {
 }
 
 #canv {
-    width: 80%;
-    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 20%;
+    bottom: 0;
     overflow: hidden;
 }
 
 canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
     cursor: crosshair;
     background: #fff;
 }
