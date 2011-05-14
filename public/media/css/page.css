@@ -1,0 +1,77 @@
+@import url(http://fonts.googleapis.com/css?family=Droid+Sans+Mono);
+
+html, body {
+    height: 100%;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    background: #eee;
+}
+
+#canv {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 20%;
+    bottom: 0;
+    overflow: hidden;
+}
+
+canvas {
+    cursor: crosshair;
+    background: #fff;
+}
+
+table#chat {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: 20%;
+    border-spacing: 0;
+    padding: 0;
+    font: .6875em "Droid Sans Mono", "Courier New", monospace;
+    border-left: 1px solid #ddd;
+    background: #fff;
+}
+
+table#chat td#scroller {
+    height: 100%;
+    vertical-align: bottom;
+    padding-bottom: 2.5em;
+}
+
+table#chat td#scroller #messages {
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: 100%;
+}
+
+table#chat td#scroller #messages p {
+    margin: .1em 1em;
+    text-indent: -.5em;
+}
+
+table#chat td#scroller #messages p.server {
+    color: #9c9;
+}
+
+table#chat form#msgform {
+    position: absolute;
+    bottom: .727em;
+    left: .727em;
+    right: .727em;
+    height: 1.454em;
+}
+
+table#chat form#msgform #message {
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    border: 1px solid #000;
+    font: 1em "Droid Sans Mono", "Courier New", monospace;
+}
+
+table#chat form #send {
+    display: none;
+}

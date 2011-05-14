@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title><%= room %></title>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<script type="text/javascript" src="/nowjs/now.js"></script>
+<script type="text/javascript" src="/media/js/paint.js"></script>
+<link rel="stylesheet" type="text/css" href="/media/css/page.css"/>
+</head>
+<body>
+<div id="canv">
+	<canvas id="paint"></canvas>
+</div>
+<table id="chat">
+    <tr><td id="scroller"><div id="messages"></div></td></tr>
+    <tr><td><form id="msgform">
+        <input id="message" type="text"/>
+        <input id="send" type="submit"/>
+    </form></td></tr>
+</table>
+</body>
+<html>
