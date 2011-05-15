@@ -27,8 +27,6 @@ table#chat {
     position: absolute;
     bottom: 0;
     right: 0;
-    height: 30em;
-    width: 20em;
     border-spacing: 0;
     padding: 0;
     font: .75em "Helvetica Neue", sans-serif;
@@ -37,7 +35,7 @@ table#chat {
 table#chat thead th {
     text-align: left;
     font-weight: bold;
-    color: #eee;
+    color: #f3f3f3;
     background: #6B96C9;
     background: rgba(107, 150, 107, 0.65);
     border-radius: .5em .5em 0 0;
@@ -45,6 +43,7 @@ table#chat thead th {
     -webkit-border-radius: .5em .5em 0 0;
     padding: .25em 0 .25em 1em;
     cursor: pointer;
+    width: 33em;
 }
 
 table#chat thead th:hover {
@@ -58,17 +57,45 @@ table#chat tbody {
     background: rgba(255, 255, 255, .65);
 }
 
-table#chat td#scroller {
-    height: 100%;
-    vertical-align: bottom;
-    padding-bottom: 5em;
-    padding-top: .5em;
+table#chat tbody td {
+    position: relative;
+    border-left: 1px solid #ddd;
 }
 
-table#chat td#scroller #messages {
+table#chat tbody td#users {
+    background: #f5fcf5;
+    background: rgba(245, 252, 245, .65);
+    vertical-align: top;
+}
+
+table#chat tbody ul#userlist {
+    padding: .5em 0;
+    margin: 0;
+    list-style-type: none;
     overflow-y: auto;
+    color: #222;
+}
+
+table#chat tbody ul#userlist li {
+    cursor: pointer;
+    padding: 2px 4px;
+}
+
+table#chat tbody ul#userlist li:hover {
+    background: #acf;
+    background: rgba(170, 204, 255, .5);
+}
+
+table#chat tbody td#scroller {
+    vertical-align: bottom;
+    padding-top: .5em;
+    width: 20em;
+}
+
+table#chat tbody td#scroller #messages {
+    height: 25em;
     overflow-x: hidden;
-    height: 100%;
+    overflow-y: auto;
 }
 
 table#chat td#scroller #messages p {
@@ -77,7 +104,7 @@ table#chat td#scroller #messages p {
     text-indent: -.5em;
     width: 17em;
     word-wrap: break-word;
-    color: #111;
+    color: #222;
 }
 
 table#chat td#scroller #messages p.highlight {
@@ -85,7 +112,13 @@ table#chat td#scroller #messages p.highlight {
 }
 
 table#chat td#scroller #messages p.server {
+    font-weight: bold;
     color: #695;
+}
+
+table#chat td#scroller #messages p.error {
+    font-weight: bold;
+    color: #956;
 }
 
 table#chat td#scroller #messages p strong {
@@ -97,22 +130,18 @@ table#chat td#scroller #messages p strong.me {
 }
 
 table#chat form#msgform {
-    position: absolute;
-    bottom: 1em;
-    left: .5em;
-    right: .5em;
-    height: 3em;
 }
 
 table#chat form#msgform #message {
-    width: 18.5em;
-    height: 100%;
+    width: 19em;
+    margin: .5em auto;
+    height: 3em;
     padding: 0;
     border: 2px solid #6B96C9;
     border-color: rgba(107, 150, 107, 0.65);
     font: 1em "Helvetica Neue", sans-serif;
     outline: none;
-    overflow: hidden;
+    display: block;
 }
 
 table#chat form#msgform #message:focus {

@@ -42,7 +42,8 @@ everyone.on('connect', function(clientId) {
     this.now.registered = false;
 
     // Announce join
-    serverMessage(this.now.room, this.now.name + " joined #" + this.now.room);
+    //serverMessage(this.now.room, this.now.name + " joined #" + this.now.room);
+    this.now.newUser(this.now.name);
 });
 
 everyone.on('disconnect', function(clientId) {
@@ -66,31 +67,24 @@ function serverMessage(room, message) {
 }
 
 everyone.now.broadcast = function(room, message) {
-    var room = nowjs.getGroup(this.now.room);
-
-    // TODO: Check if client sending broadcast is actually in the room!
-    room.now.receiveBroadcast(this.now.name, sanitize(message));
-};
-
-everyone.now.sendMessage = function(room, message){
-    var room = nowjs.getGroup(room);
-
-    // clients can't send messages to rooms they are not part of!
-    //if (room.hasClient(this.user.clientId)) {
-        this.now.receiveBroadcast(this.now.name, sanitize(message));
-    //}
+    if (message) {
+        var room = nowjs.getGroup(this.now.room);
+        
+        // TODO: Check if client sending broadcast is actually in the room!
+        room.now.receiveBroadcast(this.now.name, sanitize(message));
+    }
 };
 
 var nickValidatorRegex = /^[a-zA-Z0-9]{1,13}$/;
 everyone.now.changeName = function(newNick) {
-    if (nickValidatorRegex.test(newNick)) {
+    if (newNick && nickValidatorRegex.test(newNick)) {
         // change to just-validated nick
         var room = nowjs.getGroup(this.now.room);
         room.now.receiveServerMessage(this.now.name + " is now known as " + newNick);
         this.now.name = newNick;
     } else {
         // send back error message
-        this.now.receiveServerMessage("Keep nicknames to 1-13 alphanumeric characters in length.");
+        this.now.receiveErrorMessage("Keep nicknames to 1-13 alphanumeric characters in length.");
     }
 }
 

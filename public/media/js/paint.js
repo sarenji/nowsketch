@@ -41,7 +41,7 @@ function initNow() {
     });
     
     $(document).mousemove(function(e) {
-        flashTitle(false);
+        $.flashTitle(false);
     });
     
     // set up brushes
@@ -80,14 +80,23 @@ now.receiveBroadcast = function(name, message) {
         strongKlass = ' class="me"';
     } else if (message.toLowerCase().indexOf(this.now.name.toLowerCase()) != -1) {
         // your name was highlighted!
-        flashTitle(name + " highlighted your name!");
+        $.flashTitle(name + " highlighted your name!");
         klass = ' class="highlight"';
     }
     appendMessage("<p" + klass + "><strong" + strongKlass + ">" + name + "</strong>: " + message + "</p>");
 };
 
+now.newUser = function(user) {
+    $("#userlist").append("<li>" + user + "</li>");
+    now.receiveServerMessage(user + " joined #" + now.room);
+};
+
 now.receiveServerMessage = function(message) {
     appendMessage('<p class="server">* ' + message + "</p>");
+};
+
+now.receiveErrorMessage = function(message) {
+    appendMessage('<p class="error">! ' + message + "</p>");
 };
 
 function appendMessage(message) {
@@ -107,7 +116,7 @@ function run_command(message) {
             now.changeName(params[1]);
             break;
         default:
-            now.receiveServerMessage("This command does not exist!");
+            now.receiveErrorMessage("This command does not exist!");
     }
 }
 
@@ -118,21 +127,26 @@ function hasSelected() {
 	       !!document.selection.createRange().text;
 }
 
-function flashTitle(newMsg) {
-    if (newMsg === false) {
-        clearTimeout(flashTitle.timeoutId);
-        document.title = flashTitle.original;
-    } else {
-        flashTitle.timeoutId = setTimeout(function() {
-            clearTimeout(flashTitle.timeoutId);
-            document.title = (document.title == flashTitle.original) ? newMsg : flashTitle.original;
-            flashTitle.timeoutId = setTimeout(arguments.callee, flashTitle.interval);
-        }, flashTitle.interval);
-    }
-}
-flashTitle.original  = document.title;
-flashTitle.timeoutId = undefined;
-flashTitle.interval  = 1000;
+(function($) {
+    var DEFAULT_INTERVAL = 1000;
+    var original  = document.title;
+    var timeoutId = undefined;
+    $.flashTitle = function(newMsg, interval) {
+        if (newMsg == false) {
+            // stop flashing and reset title
+            clearTimeout(timeoutId);
+            document.title = original;
+        } else {
+            // loop flashing
+            interval = interval || DEFAULT_INTERVAL;
+            timeoutId = setTimeout(function() {
+                clearTimeout(timeoutId);
+                document.title = (document.title == original) ? newMsg : original;
+                timeoutId = setTimeout(arguments.callee, interval);
+            }, interval);
+        }
+    };
+})(jQuery);
 
 /** Nowdraw stuff */
 now.draw = function(oldX, oldY, newX, newY, color) {
