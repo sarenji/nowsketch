@@ -43,7 +43,7 @@ everyone.on('connect', function(clientId) {
 
     // Announce join
     //serverMessage(this.now.room, this.now.name + " joined #" + this.now.room);
-    this.now.newUser(this.now.name);
+    room.now.newUser(this.now.name);
 });
 
 everyone.on('disconnect', function(clientId) {
