@@ -12,7 +12,7 @@ html, body {
     position: absolute;
     top: 0;
     left: 0;
-    right: 20%;
+    right: 25em;
     bottom: 0;
     overflow: hidden;
 }
@@ -30,7 +30,7 @@ table#chat {
     top: 0;
     right: 0;
     height: 100%;
-    width: 20%;
+    width: 25em;
     border-spacing: 0;
     padding: 0;
     font: .6875em "Droid Sans Mono", "Courier New", monospace;
@@ -41,7 +41,7 @@ table#chat {
 table#chat td#scroller {
     height: 100%;
     vertical-align: bottom;
-    padding-bottom: 2.5em;
+    padding-bottom: 5.0em;
 }
 
 table#chat td#scroller #messages {
@@ -51,12 +51,15 @@ table#chat td#scroller #messages {
 }
 
 table#chat td#scroller #messages p {
-    margin: .1em 1em;
+    margin: .1em .5em;
+    padding: 0 .5em;
     text-indent: -.5em;
+    width: 23em;
+    word-wrap: break-word;
 }
 
 table#chat td#scroller #messages p.server {
-    color: #9c9;
+    color: #7a7;
 }
 
 table#chat form#msgform {
@@ -64,15 +67,21 @@ table#chat form#msgform {
     bottom: .727em;
     left: .727em;
     right: .727em;
-    height: 1.454em;
+    height: 2.908em;
 }
 
 table#chat form#msgform #message {
     width: 100%;
     height: 100%;
     padding: 0;
-    border: 1px solid #000;
+    border: 2px solid #e6b070;
     font: 1em "Droid Sans Mono", "Courier New", monospace;
+    outline: none;
+    overflow: hidden;
+}
+
+table#chat form#msgform #message:focus {
+    border-color: #ffe980;
 }
 
 table#chat form #send {
