@@ -49,6 +49,7 @@ table#chat thead th {
 
 table#chat thead th:hover {
     background: rgba(107, 150, 107, 0.85);
+    color: #fff;
 }
 
 table#chat tbody {
@@ -83,12 +84,16 @@ table#chat td#scroller #messages p.highlight {
     background: #e1f3b2;
 }
 
+table#chat td#scroller #messages p.server {
+    color: #695;
+}
+
 table#chat td#scroller #messages p strong {
     color: #444;
 }
 
-table#chat td#scroller #messages p.server {
-    color: #7a7;
+table#chat td#scroller #messages p strong.me {
+    color: #46b;
 }
 
 table#chat form#msgform {

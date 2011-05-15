@@ -30,6 +30,14 @@ function initNow() {
     // collapse message pane if top bar is clicked.
     $("table#chat thead th").mousedown(function(e) {
         $("table#chat tbody").toggle();
+        displayMsg[0].scrollTop = displayMsg[0].scrollHeight;
+    });
+    
+    // clicking displayMsg without making a selection will focus the textarea.
+    displayMsg.click(function(e) {
+        if (!hasSelected()) {
+            inputMsg.focus();
+        }
     });
     
     $(document).mousemove(function(e) {
@@ -44,7 +52,7 @@ function initNow() {
     var oldY = 0;
     var x = 0;
     var y = 0;
-    canvas.mouseup(function() {
+    $("#canv").mouseup(function() {
         drawing = false;
     }).mousedown(function(e) {
         e.preventDefault();
@@ -67,12 +75,15 @@ function initNow() {
 now.room = window.location.pathname.toString().substring(1);
 now.receiveBroadcast = function(name, message) {
     var klass = "";
-    if (message.indexOf(this.now.name) != -1) {
+    var strongKlass = "";
+    if (name === now.name) {
+        strongKlass = ' class="me"';
+    } else if (message.toLowerCase().indexOf(this.now.name.toLowerCase()) != -1) {
         // your name was highlighted!
         flashTitle(name + " highlighted your name!");
         klass = ' class="highlight"';
     }
-    appendMessage("<p" + klass + "><strong>" + name + "</strong>: " + message + "</p>");
+    appendMessage("<p" + klass + "><strong" + strongKlass + ">" + name + "</strong>: " + message + "</p>");
 };
 
 now.receiveServerMessage = function(message) {
@@ -98,6 +109,13 @@ function run_command(message) {
         default:
             now.receiveServerMessage("This command does not exist!");
     }
+}
+
+// based off http://snipplr.com/view/775/getselection/
+function hasSelected() {
+	return (!!document.getSelection) ? !!String(document.getSelection()):
+	       (!!window.getSelection)   ? !window.getSelection().isCollapsed :
+	       !!document.selection.createRange().text;
 }
 
 function flashTitle(newMsg) {
