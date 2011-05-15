@@ -1,0 +1,18 @@
+# nowsketch
+
+This is a painting and chatting application rolled into one.
+
+Demo: http://paintchat.duostack.net/ (creates a random room)
+
+Enter any room you like by putting the room name after the URL.
+
+Ex: http://paintchat.duostack.net/awesome
+
+## For the future
+
+* Different brushes (size, texture)
+* Colors
+* User list
+* Ability to make rooms private/whitelisted
+* Status in chats (so you can kick, mute, etc. Similar to IRC)
+* And more!
