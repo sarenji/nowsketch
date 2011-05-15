@@ -11,8 +11,8 @@ function initNow() {
         var msg = inputMsg.val();
         
         // attempt to execute commands if message starts with /
-        if (msg[0] == "/") {
-            run_command(msg);
+        // otherwise, execute normally
+        if (msg[0] == "/" && run_command(msg)) {
         } else {
             now.broadcast(now.room, msg);
         }
@@ -114,10 +114,11 @@ function run_command(message) {
     switch (params[0]) {
         case "/nick":
             now.changeName(params[1]);
-            break;
+            return true;
         default:
-            now.receiveErrorMessage("This command does not exist!");
+            return false;
     }
+    return false;
 }
 
 // based off http://snipplr.com/view/775/getselection/
