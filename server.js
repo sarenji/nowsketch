@@ -58,6 +58,7 @@ function sanitize(message) {
     return message.replace(/&/g, "&amp;")
                   .replace(/</g, "&lt;")
                   .replace(/>/g, "&gt;")
+                  .replace(/  /g, " &nbsp;")
                   .replace(/\n/g, "<br/>");
 }
 
@@ -89,50 +90,6 @@ everyone.now.changeName = function(newNick) {
 }
 
 /** Nowdraw stuff */
-var users = {};
-var drawQueue = {};
-var START_DRAW = 0;
-var KEEP_DRAW  = 1;
-var STOP_DRAW  = 2;
-
-/*
-everyone.now.startDraw = function(roomId, x, y) {
-    var room = nowjs.getGroup(roomId);
-    var user = this.now.name;
-    var queue = users[user][roomId];
-
-    if (!queue) {
-        queue = users[user][roomId] = [];
-    }
-
-    queue.push({ state: START_DRAW, x : x, y : y });
-};
-
-
-everyone.now.keepDraw = function(roomId, x, y) {
-    var room = nowjs.getGroup(roomId);
-    var user = this.now.name;
-    var queue = users[user][roomId];
-    
-    if (!queue) {
-        queue = users[user][roomId] = [];
-    }
-    
-    queue.push({ state: KEEP_DRAW, x : x, y : y });
-};
-
-everyone.now.stopDraw = function(roomId, x, y) {
-    var room = nowjs.getGroup(roomId);
-    var user = this.now.name;
-    var queue = users[user][roomId];
-    
-    if (!queue) {
-        queue = users[user][roomId] = [];
-    }
-    
-    queue.push({ state: KEEP_DRAW, x : x, y : y });
-};
-*/
 everyone.now.moveUser = function(x, y) {
     // TODO: Move user graphic
 };
