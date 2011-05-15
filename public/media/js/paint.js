@@ -19,11 +19,17 @@ function initNow() {
         inputMsg.val('').focus();
     });
     
+    // [Enter] sends; [Shift] + [Enter] inserts newline
     inputMsg.keydown(function(e) {
-        if (!e.shiftKey && e.keyCode == 13) { // [ENTER]
+        if (!e.shiftKey && e.keyCode == 13) { // Shift + [ENTER]
             e.preventDefault();
             $("#msgform").submit();
         }
+    });
+    
+    // collapse message pane if top bar is clicked.
+    $("table#chat thead th").mousedown(function(e) {
+        $("table#chat tbody").toggle();
     });
     
     $(document).mousemove(function(e) {
@@ -128,6 +134,7 @@ now.draw = function(oldX, oldY, newX, newY, color) {
 $(function() {
     inputMsg   = $('#message').focus();
     displayMsg = $('#messages'); // oh lord, this s thing messed me up.
+    $("table#chat thead th").text("#" + now.room);
     
     canvas  = $("#paint");
     canvas[0].width  = 800;

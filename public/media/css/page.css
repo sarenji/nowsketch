@@ -32,8 +32,28 @@ table#chat {
     border-spacing: 0;
     padding: 0;
     font: .75em "Helvetica Neue", sans-serif;
-    border-left: 1px solid #ddd;
+}
+
+table#chat thead th {
+    text-align: left;
+    font-weight: bold;
+    color: #eee;
+    background: #6B96C9;
+    background: rgba(107, 150, 107, 0.65);
+    border-radius: .5em .5em 0 0;
+    -moz-border-radius: .5em .5em 0 0;
+    -webkit-border-radius: .5em .5em 0 0;
+    padding: .25em 0 .25em 1em;
+    cursor: pointer;
+}
+
+table#chat thead th:hover {
+    background: rgba(107, 150, 107, 0.85);
+}
+
+table#chat tbody {
     background: #fff;
+    border-left: 1px solid #ddd;
     background: rgba(255, 255, 255, .65);
 }
 
@@ -41,6 +61,7 @@ table#chat td#scroller {
     height: 100%;
     vertical-align: bottom;
     padding-bottom: 5em;
+    padding-top: .5em;
 }
 
 table#chat td#scroller #messages {
@@ -82,7 +103,8 @@ table#chat form#msgform #message {
     width: 18.5em;
     height: 100%;
     padding: 0;
-    border: 2px solid #e6b070;
+    border: 2px solid #6B96C9;
+    border-color: rgba(107, 150, 107, 0.65);
     font: 1em "Helvetica Neue", sans-serif;
     outline: none;
     overflow: hidden;
