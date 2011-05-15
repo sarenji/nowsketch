@@ -33,7 +33,7 @@ table#chat {
     width: 25em;
     border-spacing: 0;
     padding: 0;
-    font: .6875em "Droid Sans Mono", "Courier New", monospace;
+    font: .75em "Helvetica Neue", sans-serif;
     border-left: 1px solid #ddd;
     background: #fff;
 }
@@ -54,8 +54,13 @@ table#chat td#scroller #messages p {
     margin: .1em .5em;
     padding: 0 .5em;
     text-indent: -.5em;
-    width: 23em;
+    width: 22.5em;
     word-wrap: break-word;
+    color: #111;
+}
+
+table#chat td#scroller #messages p strong {
+    color: #444;
 }
 
 table#chat td#scroller #messages p.server {
@@ -64,18 +69,18 @@ table#chat td#scroller #messages p.server {
 
 table#chat form#msgform {
     position: absolute;
-    bottom: .727em;
-    left: .727em;
-    right: .727em;
-    height: 2.908em;
+    bottom: 1em;
+    left: .5em;
+    right: .5em;
+    height: 2.5em;
 }
 
 table#chat form#msgform #message {
-    width: 100%;
+    width: 23.5em;
     height: 100%;
     padding: 0;
     border: 2px solid #e6b070;
-    font: 1em "Droid Sans Mono", "Courier New", monospace;
+    font: 1em "Helvetica Neue", sans-serif;
     outline: none;
     overflow: hidden;
 }
