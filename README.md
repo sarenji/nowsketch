@@ -15,4 +15,9 @@ Ex: http://paintchat.duostack.net/awesome
 * User list
 * Ability to make rooms private/whitelisted
 * Status in chats (so you can kick, mute, etc. Similar to IRC)
+* Video playback
+* Undo
+* Moving canvas around
+* Resize canvas per room
+* Show (toggleable) circles with nicknames hovering next to it.
 * And more!

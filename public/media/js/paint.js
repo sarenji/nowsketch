@@ -26,6 +26,10 @@ function initNow() {
         }
     });
     
+    $(document).mousemove(function(e) {
+        flashTitle(false);
+    });
+    
     // set up brushes
     context.lineWidth = 2;
     
@@ -39,7 +43,7 @@ function initNow() {
     }).mousedown(function(e) {
         e.preventDefault();
         drawing = true;
-    }).mousemove(function(e) {  
+    }).mousemove(function(e) {
         oldX = x;
         oldY = y;
         x = e.clientX - this.offsetLeft;
@@ -56,7 +60,13 @@ function initNow() {
 /** Nowchat stuff */
 now.room = window.location.pathname.toString().substring(1);
 now.receiveBroadcast = function(name, message) {
-    appendMessage("<p><strong>" + name + "</strong>: " + message + "</p>");
+    var klass = "";
+    if (message.indexOf(this.now.name) != -1) {
+        // your name was highlighted!
+        flashTitle(name + " highlighted your name!");
+        klass = ' class="highlight"';
+    }
+    appendMessage("<p" + klass + "><strong>" + name + "</strong>: " + message + "</p>");
 };
 
 now.receiveServerMessage = function(message) {
@@ -83,6 +93,22 @@ function run_command(message) {
             now.receiveServerMessage("This command does not exist!");
     }
 }
+
+function flashTitle(newMsg) {
+    if (newMsg === false) {
+        clearTimeout(flashTitle.timeoutId);
+        document.title = flashTitle.original;
+    } else {
+        flashTitle.timeoutId = setTimeout(function() {
+            clearTimeout(flashTitle.timeoutId);
+            document.title = (document.title == flashTitle.original) ? newMsg : flashTitle.original;
+            flashTitle.timeoutId = setTimeout(arguments.callee, flashTitle.interval);
+        }, flashTitle.interval);
+    }
+}
+flashTitle.original  = document.title;
+flashTitle.timeoutId = undefined;
+flashTitle.interval  = 1000;
 
 /** Nowdraw stuff */
 now.draw = function(oldX, oldY, newX, newY, color) {
