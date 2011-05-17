@@ -109,7 +109,7 @@ function appendMessage(message) {
 }
 
 function run_command(message) {
-    var params = message.replace(/  */, " ").split(" ");
+    var params = message.split(/  */);
     
     switch (params[0]) {
         case "/nick":

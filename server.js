@@ -1,6 +1,9 @@
+var fs      = require('fs');
 var express = require('express');
 var nowjs   = require('now');
 var app     = express.createServer();
+
+var animalNames = fs.readFileSync("animal_list", "UTF-8").split("\n");
 
 app.configure(function() {
     app.use(express.methodOverride());
@@ -11,7 +14,8 @@ app.configure(function() {
 
 /** Main page redirects to a random room */
 app.get("/", function(req, res) {
-    res.redirect("/" + makeRandomID());
+    var animal = animalNames[Math.floor(Math.random()*animalNames.length)];
+    res.redirect("/" + animal);
 });
 
 /** Render the room */
