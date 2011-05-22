@@ -6,9 +6,70 @@ html, body {
     background: #eee;
 }
 
-#canv {
+#nav {
+    background: #fff;
+    padding: .25em;
+    z-index: 2;
     position: absolute;
     top: 0;
+    left: 0;
+    right: 0;
+    border-bottom: 1px solid #ccc;
+}
+
+#nav .box {
+    position: relative;
+    border: 1px solid #000;
+    float: left;
+}
+
+#nav .box .colorbox {
+    margin: 1px;
+    background: #000;
+    width: 2em;
+    height: 2em;
+    cursor: pointer;
+}
+
+#nav form.pickerwrapper {
+    position: absolute;
+    top: 2em;
+    left: 0;
+}
+
+#nav form.pickerwrapper .pickerunder {
+    display: none;
+    border: 2px solid #444;
+    border-bottom: 2px solid #222;
+    border-right: 2px solid #222;
+    width: 209px;
+    background: #333;
+}
+
+#nav form.pickerwrapper .colorpicker {
+    margin: 5px;
+}
+
+#nav form.pickerwrapper .colorinput {
+    width: 195px;
+    padding: .5em 0;
+    text-indent: .5em;
+    margin-left: 5px;
+    margin-bottom: 5px;
+    border: 2px solid #444;
+    font-family: "Helvetica Neue", sans-serif;
+    outline: none;
+    background: #000;
+    color: #fff;
+}
+
+#nav form.pickerwrapper .colorinput:focus {
+    border-color: #666c66;
+}
+
+#canv {
+    position: absolute;
+    top: 2em;
     left: 0;
     right: 0;
     bottom: 0;

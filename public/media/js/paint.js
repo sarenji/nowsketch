@@ -3,6 +3,15 @@ var inputMsg, displayMsg;
 var drawing = false;
 var started = false;
 
+function clearSelection() {
+    if(document.selection && document.selection.empty) {
+        document.selection.empty();
+    } else if(window.getSelection) {
+        var sel = window.getSelection();
+        sel.removeAllRanges();
+    }
+}
+
 function initNow() {
     // set up sending chat
     $("#msgform").submit(function(e) {
@@ -66,17 +75,39 @@ function initNow() {
         now.moveUser(x, y);
         
         if (drawing) {
-            now.drawUser(oldX, oldY, x, y);
+            now.drawUser(oldX, oldY, x, y, $("#nav .colorinput").attr("value"));
         }
+    });
+    
+    // color pickers
+    $(".pickerunder").bind('clickoutside', function(e) {
+        var self = $(this);
+        if (self.is(":hidden")) {
+            if ($(e.target).attr('class') == 'colorbox') {
+                self.show();
+            }
+        } else {
+            self.hide();
+        }
+    });
+    
+    // as you drag stuff around, change box color and the color's text color.
+    $("#nav .colorpicker").farbtastic(function(color) {
+        $("#nav .colorinput").attr("value", color).css({
+            backgroundColor : color,
+            color : this.hsl[2] > 0.5 ? '#000' : '#fff'
+        });
+        $("#nav .colorbox").css("background", color);
     });
 }
 
 /** Nowchat stuff */
 now.room = window.location.pathname.toString().substring(1);
 now.receiveBroadcast = function(name, message) {
-    var klass = "";
+    var klass       = "";
     var strongKlass = "";
     if (name === now.name) {
+        // it's you talking!
         strongKlass = ' class="me"';
     } else if (message.toLowerCase().indexOf(this.now.name.toLowerCase()) != -1) {
         // your name was highlighted!

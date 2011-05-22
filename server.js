@@ -29,7 +29,7 @@ app.get("/:room", function(req, res) {
 app.listen(10013);
 
 function makeRandomID() {
-    return String(Math.floor(Math.random()*10000));
+    return String(Math.floor(Math.random()*100));
 }
 
 var everyone = nowjs.initialize(app);
