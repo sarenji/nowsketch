@@ -1,4 +1,4 @@
-var canvas, context;
+var canvas, context, dom;
 var inputMsg, displayMsg;
 var drawing = false;
 var started = false;
@@ -14,10 +14,10 @@ function clearSelection() {
 
 function initNow() {
     // set up sending chat
-    $("#msgform").submit(function(e) {
+    dom.msgform.submit(function(e) {
         e.preventDefault();
         // TODO: Limit messages server/client side.
-        var msg = inputMsg.val();
+        var msg = dom.inputMsg.val();
         
         // attempt to execute commands if message starts with /
         // otherwise, execute normally
@@ -25,32 +25,28 @@ function initNow() {
         } else {
             now.broadcast(now.room, msg);
         }
-        inputMsg.val('').focus();
+        dom.inputMsg.val('').focus();
     });
     
     // [Enter] sends; [Shift] + [Enter] inserts newline
-    inputMsg.keydown(function(e) {
+    dom.inputMsg.keydown(function(e) {
         if (!e.shiftKey && e.keyCode == 13) { // Shift + [ENTER]
             e.preventDefault();
-            $("#msgform").submit();
+            dom.msgform.submit();
         }
     });
     
     // collapse message pane if top bar is clicked.
-    $("table#chat thead th").mousedown(function(e) {
-        $("table#chat tbody").toggle();
-        displayMsg[0].scrollTop = displayMsg[0].scrollHeight;
+    dom.chatHeader.mousedown(function(e) {
+        dom.chatBody.toggle();
+        dom.displayMsg[0].scrollTop = dom.displayMsg[0].scrollHeight;
     });
     
     // clicking displayMsg without making a selection will focus the textarea.
-    displayMsg.click(function(e) {
+    dom.displayMsg.click(function(e) {
         if (!hasSelected()) {
-            inputMsg.focus();
+            dom.inputMsg.focus();
         }
-    });
-    
-    $(document).mousemove(function(e) {
-        $.flashTitle(false);
     });
     
     // set up brushes
@@ -61,21 +57,24 @@ function initNow() {
     var oldY = 0;
     var x = 0;
     var y = 0;
-    $("#canv").mouseup(function() {
+    
+    dom.canvasWrap.mouseup(function() {
         drawing = false;
+        dom.chat.stop(true, true).fadeIn(250);
     }).mousedown(function(e) {
         e.preventDefault();
         drawing = true;
+        dom.chat.stop(true, true).fadeOut(250);
     }).mousemove(function(e) {
         oldX = x;
         oldY = y;
-        x = e.clientX - this.offsetLeft;
-        y = e.clientY - this.offsetTop;
+        x = e.clientX - dom.canvasWrap[0].offsetLeft;
+        y = e.clientY - dom.canvasWrap[0].offsetTop;
         
         now.moveUser(x, y);
         
         if (drawing) {
-            now.drawUser(oldX, oldY, x, y, $("#nav .colorinput").attr("value"));
+            now.drawUser(oldX, oldY, x, y, dom.colorText.attr("value"));
         }
     });
     
@@ -93,7 +92,7 @@ function initNow() {
     
     // as you drag stuff around, change box color and the color's text color.
     $("#nav .colorpicker").farbtastic(function(color) {
-        $("#nav .colorinput").attr("value", color).css({
+        dom.colorText.attr("value", color).css({
             backgroundColor : color,
             color : this.hsl[2] > 0.5 ? '#000' : '#fff'
         });
@@ -113,12 +112,17 @@ now.receiveBroadcast = function(name, message) {
         // your name was highlighted!
         $.flashTitle(name + " highlighted your name!");
         klass = ' class="highlight"';
+        
+        // trigger one-time mouse move event to reset title.
+        $(document).one('mousemove', function(e) {
+            $.flashTitle(false);
+        });
     }
     appendMessage("<p" + klass + "><strong" + strongKlass + ">" + name + "</strong>: " + message + "</p>");
 };
 
 now.newUser = function(user) {
-    $("#userlist").append("<li>" + user + "</li>");
+    dom.userList.append("<li>" + user + "</li>");
     now.receiveServerMessage(user + " joined #" + now.room);
 };
 
@@ -131,11 +135,11 @@ now.receiveErrorMessage = function(message) {
 };
 
 function appendMessage(message) {
-    var isAtBottom = (displayMsg.attr('scrollTop') == 
-        (displayMsg.attr('scrollHeight') - displayMsg.attr('clientHeight')));
-    displayMsg.append(message);
+    var isAtBottom = (dom.displayMsg.attr('scrollTop') == 
+        (dom.displayMsg.attr('scrollHeight') - dom.displayMsg.attr('clientHeight')));
+    dom.displayMsg.append(message);
     if (isAtBottom) {
-        displayMsg.attr('scrollTop', displayMsg.attr('scrollHeight'));
+        dom.displayMsg.attr('scrollTop', dom.displayMsg.attr('scrollHeight'));
     }
 }
 
@@ -196,14 +200,26 @@ now.draw = function(oldX, oldY, newX, newY, color) {
 
 /** Init */
 $(function() {
-    inputMsg   = $('#message').focus();
-    displayMsg = $('#messages'); // oh lord, this s thing messed me up.
-    $("table#chat thead th").text("#" + now.room);
+    // set up dom elements
+    dom = {
+        msgform    : $("#msgform"),
+        inputMsg   : $("#message").focus(),
+        displayMsg : $("#messages"),
+        userList   : $("#userlist"),
+        canvasWrap : $("#canv"),
+        canvas     : $("#paint"),
+        chat       : $("#chat"),
+        chatBody   : $("table#chat tbody"),
+        chatHeader : $("table#chat thead th"),
+        colorText  : $("#nav .colorinput")
+    };
     
-    canvas  = $("#paint");
-    canvas[0].width  = 800;
-    canvas[0].height = 600;
-    context = canvas[0].getContext('2d');
+    dom.chatHeader.text("Chatting in #" + now.room);
+    
+    canvas = dom.canvas[0];
+    canvas.width  = 800;
+    canvas.height = 600;
+    context = canvas.getContext('2d');
     
     now.ready(initNow);
 });
