@@ -27,7 +27,8 @@ var TLDs = [ "aero", "asia", "biz", "cat", "com", "coop", "edu", "gov", "info", 
              "tt", "tv", "tw", "tz", "ua", "ug", "uk", "us", "uy", "uz", "va", "vc", "ve", "vg",
              "vi", "vn", "vu", "wf", "ws", "ye", "yt", "za", "zm", "zw" ];
 
-var replaceURLRegex = new RegExp("(https?:\\/\\/)?([-a-zA-Z.]{1,64}\\.(?:" + TLDs.join("|") + ")[()%/]*)(?!\\S)", "i");
+var replaceURLRegex = new RegExp("(https?:\\/\\/)?([-a-zA-Z.]{1,64}\\.(?:"
+              + TLDs.join("|") + ")(?:/[()%/\\w_.~]*)?)(?!\\S)", "i");
 
 app.configure(function() {
     app.use(express.methodOverride());
@@ -91,7 +92,7 @@ function sanitize(message) {
                   .replace(replaceURLRegex, function() {
                       var url = RegExp.$1 || "http://";
                       url    += RegExp.$2;
-                      return '<a href="' + url + '">' + RegExp.$2 + '</a>' + RegExp.$3;
+                      return '<a href="' + url + '">' + RegExp.$2 + '</a>';
                   });
 }
 
