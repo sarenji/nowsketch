@@ -27,15 +27,6 @@ var TLDs = [ "aero", "asia", "biz", "cat", "com", "coop", "edu", "gov", "info", 
 var replaceURLRegex = new RegExp("(https?:\\/\\/)?([-a-zA-Z.]{1,64}\\.(?:"
               + TLDs.join("|") + ")(?:/[()%/\\w_.~]*)?)(?![0-9A-Za-z])", "i");
 
-function clearSelection() {
-    if(document.selection && document.selection.empty) {
-        document.selection.empty();
-    } else if(window.getSelection) {
-        var sel = window.getSelection();
-        sel.removeAllRanges();
-    }
-}
-
 function initNow() {
     // set up sending chat
     dom.msgform.submit(function(e) {
