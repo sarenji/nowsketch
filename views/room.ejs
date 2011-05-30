@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <title><%= room %></title>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<script type="text/javascript" src="/media/js/jquery.js"></script>
 <script type="text/javascript" src="/media/js/outside-events.js"></script>
 <script type="text/javascript" src="/media/js/farbtastic.js"></script>
 <script type="text/javascript" src="/nowjs/now.js"></script>
@@ -12,36 +12,38 @@
 <meta charset='utf-8'/>
 </head>
 <body>
-<div id="nav">
-	<div class="box">
-		<div class="colorbox"></div>
-		<form class="pickerwrapper" action="">
-			<div class="pickerunder">
-				<div class="colorpicker"></div>
-				<input type="text" class="colorinput" value="#000000"/>
-			</div>
-		</form>
-	</div>
-</div>
 <div id="canv">
 	<canvas id="paint"></canvas>
 </div>
-<table id="chat">
-	<thead>
-		<tr><th colspan="2"></th></tr>
-	</thead>
-	<tbody>
-	    <tr>
-			<td rowspan="2" id="users">
-				<ul id="userlist"></ul>
-			</td>
-			<td id="scroller"><div id="messages"></div></td>
-		</tr>
-	    <tr><td><form id="msgform">
-	        <textarea id="message"></textarea>
-	        <input id="send" type="submit"/>
-	    </form></td></tr>
-	</tbody>
-</table>
+<div id="ui">
+	<table id="chat">
+		<thead>
+			<tr><th colspan="2"></th></tr>
+		</thead>
+		<tbody>
+		    <tr>
+				<td rowspan="2" id="users">
+					<ul id="userlist"></ul>
+				</td>
+				<td id="scroller"><div id="messages"></div></td>
+			</tr>
+		    <tr><td><form id="msgform">
+		        <textarea id="message"></textarea>
+		        <input id="send" type="submit"/>
+		    </form></td></tr>
+		</tbody>
+	</table>
+	<div id="nav">
+		<div class="box">
+			<div class="colorbox"></div>
+			<form class="pickerwrapper" action="">
+				<div class="pickerunder">
+					<div class="colorpicker"></div>
+					<input type="text" class="colorinput" value="#000000"/>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
 </body>
 <html>

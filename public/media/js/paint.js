@@ -1,5 +1,4 @@
 var canvas, context, dom;
-var inputMsg, displayMsg;
 var drawing = false;
 var started = false;
 
@@ -60,16 +59,16 @@ function initNow() {
     
     dom.canvasWrap.mouseup(function() {
         drawing = false;
-        dom.chat.stop(true, true).fadeIn(250);
+        dom.ui.stop(true, true).fadeIn(250);
     }).mousedown(function(e) {
         e.preventDefault();
         drawing = true;
-        dom.chat.stop(true, true).fadeOut(250);
+        dom.ui.stop(true, true).fadeOut(250);
     }).mousemove(function(e) {
         oldX = x;
         oldY = y;
-        x = e.clientX - dom.canvasWrap[0].offsetLeft;
-        y = e.clientY - dom.canvasWrap[0].offsetTop;
+        x = e.clientX - canvas.offsetLeft;
+        y = e.clientY - canvas.offsetTop;
         
         now.moveUser(x, y);
         
@@ -137,6 +136,7 @@ now.receiveErrorMessage = function(message) {
 function appendMessage(message) {
     var isAtBottom = (dom.displayMsg.attr('scrollTop') == 
         (dom.displayMsg.attr('scrollHeight') - dom.displayMsg.attr('clientHeight')));
+    // append to the chat window
     dom.displayMsg.append(message);
     if (isAtBottom) {
         dom.displayMsg.attr('scrollTop', dom.displayMsg.attr('scrollHeight'));
@@ -202,6 +202,7 @@ now.draw = function(oldX, oldY, newX, newY, color) {
 $(function() {
     // set up dom elements
     dom = {
+        ui         : $("#ui"),
         msgform    : $("#msgform"),
         inputMsg   : $("#message").focus(),
         displayMsg : $("#messages"),
