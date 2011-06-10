@@ -3,7 +3,6 @@ var express = require('express');
 var nowjs   = require('now');
 var app     = express.createServer();
 
-var animalNames = fs.readFileSync("animal_list", "UTF-8").split("\n");
 var nickValidatorRegex = /^[a-zA-Z0-9]{1,13}$/;
 // domain name list
 var TLDs = [ "aero", "asia", "biz", "cat", "com", "coop", "edu", "gov", "info", "int", "jobs",
@@ -39,8 +38,9 @@ app.configure(function() {
 
 /** Main page redirects to a random room */
 app.get("/", function(req, res) {
-    var animal = animalNames[Math.floor(Math.random()*animalNames.length)];
-    res.redirect("/" + animal);
+    // todo: Make sure the room doesn't exist
+    var roomId = Math.floor(Math.random() * 10000000).toString(16);
+    res.redirect("/" + roomId);
 });
 
 /** Render the room */
@@ -82,7 +82,10 @@ everyone.on('disconnect', function(clientId) {
     serverMessage(this.now.room, this.now.name + " left #" + this.now.room);
 });
 
-/** Nowchat stuff */
+/** 
+ * Prepares a message for HTML display. It fixes carets, 
+ * multiple spaces, and newlines.
+ */
 function sanitize(message) {
     return message.replace(/&/g, "&amp;")
                   .replace(/</g, "&lt;")
