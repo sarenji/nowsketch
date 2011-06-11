@@ -3,6 +3,7 @@ var express = require('express');
 var nowjs   = require('now');
 var app     = express.createServer();
 
+var animalNames = fs.readFileSync("animal_list", "UTF-8").split("\n");
 var nickValidatorRegex = /^[a-zA-Z0-9]{1,13}$/;
 
 app.configure(function() {
@@ -29,8 +30,9 @@ app.get("/:room", function(req, res) {
 
 app.listen(10013);
 
-function makeRandomID() {
-    return String(Math.floor(Math.random()*100));
+function makeRandomGuestID() {
+    var animal = animalNames[Math.floor(Math.random()*animalNames.length)];
+    return animal + String(Math.floor(Math.random()*1000));
 }
 
 var everyone = nowjs.initialize(app);
@@ -43,7 +45,7 @@ everyone.on('connect', function(clientId) {
 
     // TODO: If not authed, return new name (Guest###)
     // Also do other stuff
-    this.now.name       = "Guest" + makeRandomID();
+    this.now.name       = makeRandomGuestID();
     this.now.registered = false;
 
     // Announce join
