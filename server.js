@@ -36,12 +36,12 @@ function makeRandomGuestID() {
 }
 
 var everyone = nowjs.initialize(app);
-everyone.on('connect', function(clientId) {
+everyone.on('connect', function() {
     var room = nowjs.getGroup(this.now.room);
     
     // TODO: Auth auth
 
-    room.addUser(clientId);
+    room.addUser(this.user.clientId);
 
     // TODO: If not authed, return new name (Guest###)
     // Also do other stuff
@@ -53,9 +53,9 @@ everyone.on('connect', function(clientId) {
     room.now.newUser(this.now.name);
 });
 
-everyone.on('disconnect', function(clientId) {
+everyone.on('disconnect', function() {
     var room = nowjs.getGroup(this.now.room);
-    room.removeUser(clientId);
+    room.removeUser(this.user.clientId);
 
     serverMessage(this.now.room, this.now.name + " left #" + this.now.room);
 });

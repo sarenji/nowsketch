@@ -28,6 +28,20 @@ var replaceURLRegex = new RegExp("(https?:\\/\\/)?([-a-zA-Z.]{1,64}\\.(?:"
               + TLDs.join("|") + ")(?:/[()%/\\w_.~]*)?)(?![0-9A-Za-z])", "i");
 
 function initNow() {
+    $(document).keyup(function(e) {
+        console.log(e);
+        if (e.ctrlKey && e.keyCode == 72) {
+            // Ctrl + [H] toggles UI and focuses on chat textarea
+            dom.ui.toggle();
+            dom.inputMsg.focus();
+        } else if (e.ctrlKey && e.keyCode == 67) {
+            // Ctrl + [M] just focuses on chat textarea
+            dom.inputMsg.focus();
+        } else if (e.ctrlKey && e.keyCode == 67) {
+            // Ctrl + [C] opens color window.
+            //dom.inputMsg.focus();
+        }
+    });
     // set up sending chat
     dom.msgform.submit(function(e) {
         e.preventDefault();
@@ -45,7 +59,8 @@ function initNow() {
     
     // [Enter] sends; [Shift] + [Enter] inserts newline
     dom.inputMsg.keydown(function(e) {
-        if (!e.shiftKey && e.keyCode == 13) { // Shift + [ENTER]
+        if (!e.shiftKey && e.keyCode == 13) {
+            // [ENTER] sends form; Shift + [ENTER] doesn't
             e.preventDefault();
             dom.msgform.submit();
         }
@@ -75,11 +90,9 @@ function initNow() {
     
     dom.canvasWrap.mouseup(function() {
         drawing = false;
-        dom.ui.stop(true, true).fadeIn(250);
     }).mousedown(function(e) {
         e.preventDefault();
         drawing = true;
-        dom.ui.stop(true, true).fadeOut(250);
     }).mousemove(function(e) {
         oldX = x;
         oldY = y;
@@ -94,7 +107,7 @@ function initNow() {
     });
     
     // color pickers
-    $(".pickerunder").bind('clickoutside', function(e) {
+    $(".pickerunder").bind('mousedownoutside', function(e) {
         var self = $(this);
         if (self.is(":hidden")) {
             if ($(e.target).attr('class') == 'colorbox') {
