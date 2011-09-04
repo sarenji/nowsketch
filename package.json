@@ -2,7 +2,7 @@
     "name" : "paintchat",
     "version" : "0.0.1",
     "engines" : {
-        "node": "*"
+        "node": "0.4.11"
     },
     "dependencies" : {
         "express" : "*",
