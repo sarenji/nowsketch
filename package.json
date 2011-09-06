@@ -6,7 +6,8 @@
     },
     "dependencies" : {
         "express" : "*",
-        "now" : "*",
-        "ejs" : "*"
+        "socket.io" : "*",
+        "ejs" : "*",
+        "hat" : "*"
     }
 }

@@ -1,6 +1,7 @@
 var canvas, context, dom;
 var drawing = false;
 var started = false;
+var users   = [];
 
 // domain name list
 var TLDs = [ "aero", "asia", "biz", "cat", "com", "coop", "edu", "gov", "info", "int", "jobs",
@@ -27,9 +28,8 @@ var TLDs = [ "aero", "asia", "biz", "cat", "com", "coop", "edu", "gov", "info", 
 var replaceURLRegex = new RegExp("(https?:\\/\\/)?([-a-zA-Z.]{1,64}\\.(?:"
               + TLDs.join("|") + ")(?:/[()%/\\w_.~]*)?)(?![0-9A-Za-z])", "i");
 
-function initNow() {
+function afterServerConnect() {
     $(document).keyup(function(e) {
-        console.log(e);
         if (e.ctrlKey && e.keyCode == 72) {
             // Ctrl + [H] toggles UI and focuses on chat textarea
             dom.ui.toggle();
@@ -43,6 +43,7 @@ function initNow() {
         }
     });
     // set up sending chat
+    // todo: only send messages once you've gotten a nickname
     dom.msgform.submit(function(e) {
         e.preventDefault();
         // TODO: Limit messages server/client side.
@@ -52,7 +53,8 @@ function initNow() {
         // otherwise, execute normally
         if (msg[0] == "/" && run_command(msg)) {
         } else {
-            now.broadcast(now.room, msg);
+            socket.emit("send chat", msg);
+            appendMessage("<p><strong class='me'>" + nickname + "</strong>: " + msg + "</p>");
         }
         dom.inputMsg.val('').focus();
     });
@@ -99,10 +101,12 @@ function initNow() {
         x = e.clientX - canvas.offsetLeft;
         y = e.clientY - canvas.offsetTop;
         
-        now.moveUser(x, y);
+        // socket.emit("move user cursor", x, y);
         
         if (drawing) {
-            now.drawUser(oldX, oldY, x, y, dom.colorText.attr("value"));
+          var color = dom.colorText.attr("value");
+          socket.emit("draw user brush", oldX, oldY, x, y, color);
+          drawBrush(oldX, oldY, x, y, color);
         }
     });
     
@@ -128,39 +132,78 @@ function initNow() {
     });
 }
 
-/** Nowchat stuff */
-now.room = window.location.pathname.toString().substring(1);
-now.receiveBroadcast = function(name, message) {
-    var klass       = "";
-    var strongKlass = "";
-    if (name === now.name) {
-        // it's you talking!
-        strongKlass = ' class="me"';
-    } else if (message.toLowerCase().indexOf(this.now.name.toLowerCase()) != -1) {
-        // your name was highlighted!
-        $.flashTitle(name + " highlighted your name!");
-        klass = ' class="highlight"';
-        
-        // trigger one-time mouse move event to reset title.
-        $(document).one('mousemove', function(e) {
-            $.flashTitle(false);
-        });
-    }
-    appendMessage("<p" + klass + "><strong" + strongKlass + ">" + name + "</strong>: " + message + "</p>");
-};
+/** Chat stuff */
+var socket = io.connect();
+// socket.room = window.location.pathname.toString().substring(1);
 
-now.newUser = function(user) {
-    dom.userList.append("<li>" + user + "</li>");
-    now.receiveServerMessage(user + " joined #" + now.room);
-};
+socket.on("connect", function() {
+  printServerMessage("You joined #" + "derp");
+  afterServerConnect();
+  appendToUserList("derp");
+  socket.emit("join room", window.location.pathname.toString().substring(1));
+});
 
-now.receiveServerMessage = function(message) {
-    appendMessage('<p class="server">* ' + message + "</p>");
-};
+socket.on("disconnect", function() {
+  printServerMessage("You disconnected. Reconnecting...");
+});
 
-now.receiveErrorMessage = function(message) {
-    appendMessage('<p class="error">! ' + message + "</p>");
-};
+socket.on("user disconnect", function(userName) {
+  printServerMessage(userName + " left #" + "derp");
+});
+
+var nickname;
+socket.on("set name", function(newName) {
+  nickname = newName;
+});
+
+socket.on("user changed name", function(oldName, newName) {
+  printServerMessage(oldName + " changed names to " + newName);
+});
+
+socket.on("receive chat", function(name, message) {
+  var klass = "";
+  if (message.toLowerCase().indexOf(name.toLowerCase()) != -1) {
+      // your name was highlighted!
+      $.flashTitle(name + " highlighted your name!");
+      klass = ' class="highlight"';
+      
+      // trigger one-time mouse move event to reset title.
+      $(document).one('mousemove', function(e) {
+          $.flashTitle(false);
+      });
+  }
+  appendMessage("<p" + klass + "><strong>" + name + "</strong>: " + message + "</p>");
+});
+
+socket.on("join room", function(user) {
+  dom.userList.append("<li>" + user + "</li>");
+  printServerMessage(user + " joined #" + "derp");
+  appendToUserList(user);
+});
+
+socket.on("receive server message", printServerMessage);
+
+socket.on("receive error message", function(message) {
+  appendMessage('<p class="error">! ' + message + "</p>");
+});
+
+function printServerMessage(message) {
+  appendMessage('<p class="server">* ' + message + "</p>");
+}
+
+function appendToUserList(userName) {
+  users.push(userName);
+  users.sort();
+  updateUserList();
+}
+
+function updateUserList() {
+  var $userList = $("#userlist");
+  $userList.empty();
+  for (var i = 0; i < users.length; i++) {
+    $userList.append("<li>" + users[i] + "</li>");
+  }
+}
 
 function appendMessage(message) {
     var isAtBottom = (dom.displayMsg.attr('scrollTop') == 
@@ -183,7 +226,7 @@ function run_command(message) {
     
     switch (params[0]) {
         case "/nick":
-            now.changeName(params[1]);
+            socket.emit("change name", params[1]);
             return true;
         default:
             return false;
@@ -198,6 +241,11 @@ function hasSelected() {
 	       !!document.selection.createRange().text;
 }
 
+/**
+ * jQuery plugin to flash the title
+ * Call by $.flashTitle(newMessage[, interval]);
+ * Stop flashing by passing "false" instead of newMessage.
+ */
 (function($) {
     var DEFAULT_INTERVAL = 1000;
     var original  = document.title;
@@ -220,18 +268,20 @@ function hasSelected() {
 })(jQuery);
 
 /** Nowdraw stuff */
-now.draw = function(oldX, oldY, newX, newY, color) {
-    var dx = newX - oldX;
-    var dy = newY - oldY;
-    color  = color || "black";
-    
-    context.strokeStyle = color;
-    context.beginPath();
-    context.moveTo(oldX, oldY);
-    context.lineTo(newX, newY);
-    context.closePath();
-    context.stroke();
-};
+socket.on("draw user brush", drawBrush);
+
+function drawBrush(oldX, oldY, newX, newY, color) {
+  var dx = newX - oldX;
+  var dy = newY - oldY;
+  color  = color || "black";
+  
+  context.strokeStyle = color;
+  context.beginPath();
+  context.moveTo(oldX, oldY);
+  context.lineTo(newX, newY);
+  context.closePath();
+  context.stroke();
+}
 
 /** Init */
 $(function() {
@@ -250,12 +300,10 @@ $(function() {
         colorText  : $("#nav .colorinput")
     };
     
-    dom.chatHeader.text("Chatting in #" + now.room);
+    dom.chatHeader.text("Chatting in #" + "derp");
     
     canvas = dom.canvas[0];
     canvas.width  = 800;
     canvas.height = 600;
     context = canvas.getContext('2d');
-    
-    now.ready(initNow);
 });
